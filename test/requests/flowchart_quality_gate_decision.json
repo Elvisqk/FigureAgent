@@ -1,0 +1,67 @@
+{
+  "request_id": "figreq_flowchart_quality_gate_decision",
+  "paper_id": "figure_agent_flowchart_demo",
+  "figure_id": "fig_flowchart_quality_gate_decision",
+  "figure_kind": "diagram",
+  "goal": "Show a quality-gated figure generation workflow with pass, repair, and manual review paths.",
+  "target_section": "Method/Quality Gate Workflow",
+  "context": {
+    "result_summary": null,
+    "method_summary": "Draft figure request -> Bind evidence -> Generate spec -> Render candidate -> Critic gate -> pass to final package, repairable failure loops to spec repair, non-repairable failure goes to manual review.",
+    "style_profile": "academic_default",
+    "output_formats": ["svg", "png"],
+    "max_revision_rounds": 2,
+    "diagram_type": "decision_flow",
+    "diagram_structure": {
+      "layout_mode": "branch_merge",
+      "nodes": [
+        {"id": "n1", "label": "Draft request", "role": "input", "group": null},
+        {"id": "n2", "label": "Bind evidence", "role": "process", "group": null},
+        {"id": "n3", "label": "Generate spec", "role": "process", "group": null},
+        {"id": "n4", "label": "Render candidate", "role": "tool", "group": null},
+        {"id": "n5", "label": "Critic gate", "role": "decision", "group": null},
+        {"id": "n6", "label": "Spec repair", "role": "process", "group": "failure_paths"},
+        {"id": "n7", "label": "Manual review", "role": "decision", "group": "failure_paths"},
+        {"id": "n8", "label": "Final package", "role": "output", "group": null}
+      ],
+      "edges": [
+        {"source": "n1", "target": "n2", "kind": "primary", "label": null},
+        {"source": "n2", "target": "n3", "kind": "primary", "label": null},
+        {"source": "n3", "target": "n4", "kind": "primary", "label": null},
+        {"source": "n4", "target": "n5", "kind": "primary", "label": null},
+        {"source": "n5", "target": "n8", "kind": "primary", "label": "pass"},
+        {"source": "n5", "target": "n6", "kind": "secondary", "label": "repair"},
+        {"source": "n5", "target": "n7", "kind": "secondary", "label": "manual"},
+        {"source": "n6", "target": "n3", "kind": "feedback", "label": "retry"},
+        {"source": "n7", "target": "n8", "kind": "secondary", "label": "approve"}
+      ],
+      "clusters": [
+        {"cluster_id": "cluster_failure_paths", "label": "Failure Handling", "role": "group", "members": ["n6", "n7"]}
+      ],
+      "lanes": [],
+      "primary_flow": ["n1", "n2", "n3", "n4", "n5", "n8"],
+      "routing_hints": {
+        "prefer_orthogonal_edges": true,
+        "separate_primary_and_secondary_edges": true
+      },
+      "label_policy": {
+        "max_chars_per_line": 16,
+        "max_lines_per_node": 3
+      }
+    }
+  },
+  "evidence_refs": [
+    {
+      "evidence_id": "ev_quality_gate_decision",
+      "kind": "text_block",
+      "path": null,
+      "content": "Draft figure request -> Bind evidence -> Generate spec -> Render candidate -> Critic gate -> pass to final package, repairable failure loops to spec repair, non-repairable failure goes to manual review.",
+      "sheet": null,
+      "table_name": null,
+      "row_selector": null,
+      "column_selector": null,
+      "paragraph_ref": "Method/Quality Gate Workflow",
+      "sha256": null
+    }
+  ]
+}

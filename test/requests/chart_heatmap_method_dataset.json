@@ -1,0 +1,30 @@
+{
+  "request_id": "figreq_chart_heatmap_method_dataset",
+  "paper_id": "figure_agent_chart_demo",
+  "figure_id": "fig_chart_heatmap_method_dataset",
+  "figure_kind": "chart",
+  "goal": "Compare method scores across datasets with a heatmap.",
+  "target_section": "Experiments/Cross-Dataset Comparison",
+  "context": {
+    "result_summary": "Hybrid Agent and LLM Planner dominate different datasets, while Rule Planner is consistently lower.",
+    "method_summary": null,
+    "style_profile": "academic_default",
+    "output_formats": ["png", "pdf"],
+    "max_revision_rounds": 2,
+    "chart_type": "heatmap"
+  },
+  "evidence_refs": [
+    {
+      "evidence_id": "ev_method_dataset_heatmap",
+      "kind": "table_file",
+      "path": "test/data/method_dataset_heatmap.csv",
+      "content": null,
+      "sheet": null,
+      "table_name": null,
+      "row_selector": null,
+      "column_selector": ["dataset", "method", "score_mean"],
+      "paragraph_ref": "Experiments/Cross-Dataset Comparison",
+      "sha256": null
+    }
+  ]
+}

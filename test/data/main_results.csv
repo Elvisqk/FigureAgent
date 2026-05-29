@@ -1,0 +1,7 @@
+dataset,method,score_mean,score_std
+Dataset-1,Method A,0.91,0.02
+Dataset-1,Method B,0.86,0.03
+Dataset-2,Method A,0.88,0.02
+Dataset-2,Method B,0.81,0.04
+Dataset-3,Method A,0.84,0.03
+Dataset-3,Method B,0.79,0.05

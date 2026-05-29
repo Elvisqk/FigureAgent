@@ -27,7 +27,14 @@
         },
         "max_revision_rounds": {"type": "integer", "minimum": 0, "maximum": 2},
         "chart_type": {"type": "string"},
-        "diagram_type": {"type": "string"}
+        "diagram_type": {"type": "string"},
+        "figure_title": {"type": ["string", "null"]},
+        "figure_subtitle": {"type": ["string", "null"]},
+        "figure_notes": {
+          "type": ["array", "string", "null"],
+          "items": {"type": "string"}
+        },
+        "figure_footer": {"type": ["string", "null"]}
       }
     },
     "evidence_refs": {
@@ -37,4 +44,3 @@
     }
   }
 }
-

@@ -1,0 +1,30 @@
+{
+  "request_id": "figreq_chart_bar_component_scaling_7bar",
+  "paper_id": "figure_agent_complex_chart_demo",
+  "figure_id": "fig_chart_bar_component_scaling_7bar",
+  "figure_kind": "chart",
+  "goal": "Compare the contribution score of seven FigureAgent components in a compact single-series bar chart.",
+  "target_section": "Experiments/Component Scaling",
+  "context": {
+    "result_summary": "The contribution score rises as the pipeline adds stronger planning, rendering, criticism, and integration stages.",
+    "method_summary": null,
+    "style_profile": "academic_default",
+    "output_formats": ["png", "pdf"],
+    "max_revision_rounds": 2,
+    "chart_type": "bar"
+  },
+  "evidence_refs": [
+    {
+      "evidence_id": "ev_component_scaling_7bar",
+      "kind": "table_file",
+      "path": "test/data/component_scaling_7bar.csv",
+      "content": null,
+      "sheet": null,
+      "table_name": null,
+      "row_selector": null,
+      "column_selector": ["category", "value"],
+      "paragraph_ref": "Experiments/Component Scaling",
+      "sha256": null
+    }
+  ]
+}

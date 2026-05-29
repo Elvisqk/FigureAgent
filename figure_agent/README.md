@@ -27,11 +27,15 @@ Run the full workflow:
 python -m figure_agent run /path/to/research_figure_context.json --output /path/to/result.json
 ```
 
-Artifacts are written under `figure_agent/artifacts` by default. Override this with:
+If `FIGURE_AGENT_ARTIFACT_ROOT` is not set, artifacts are generated under `figure_agent/artifacts`.
+Override this with:
 
 ```bash
 FIGURE_AGENT_ARTIFACT_ROOT=/path/to/artifacts python -m figure_agent run /path/to/research_figure_context.json
 ```
+
+For manual black-box tests in this repository, prefer the scripts under `../test/`; they keep all
+generated files under `../test/artifacts/`.
 
 ## Codex Adapter
 

@@ -1,0 +1,73 @@
+{
+  "request_id": "figreq_structured_capability_showcase",
+  "paper_id": "figure_agent_demo",
+  "figure_id": "fig_structured_capability_showcase",
+  "figure_kind": "diagram",
+  "goal": "Demonstrate FigureAgent's current controlled diagram capabilities: main flow, explicit parallel branches, merge edges, grouped branch region, and a feedback loop.",
+  "target_section": "Demo/FigureAgent Capability Showcase",
+  "context": {
+    "result_summary": null,
+    "method_summary": "Research question -> FigureAgent controller -> parallel chart, workflow diagram, architecture diagram, caption branches -> SpecGenerator -> Renderer -> Critic -> feedback to SpecGenerator if failed -> Final figure package",
+    "style_profile": "academic_default",
+    "output_formats": ["svg", "png"],
+    "max_revision_rounds": 2,
+    "diagram_type": "agent_workflow",
+    "diagram_structure": {
+      "layout_mode": "branch_merge",
+      "nodes": [
+        {"id": "n1", "label": "Research question", "role": "input", "group": null},
+        {"id": "n2", "label": "FigureAgent controller", "role": "process", "group": null},
+        {"id": "n3", "label": "Chart branch", "role": "process", "group": "parallel_branches"},
+        {"id": "n4", "label": "Workflow diagram branch", "role": "process", "group": "parallel_branches"},
+        {"id": "n5", "label": "Architecture diagram branch", "role": "process", "group": "parallel_branches"},
+        {"id": "n6", "label": "Caption branch", "role": "process", "group": "parallel_branches"},
+        {"id": "n7", "label": "SpecGenerator", "role": "process", "group": null},
+        {"id": "n8", "label": "Renderer", "role": "process", "group": null},
+        {"id": "n9", "label": "Critic decision", "role": "decision", "group": null},
+        {"id": "n10", "label": "Final figure package", "role": "output", "group": null}
+      ],
+      "edges": [
+        {"source": "n1", "target": "n2", "kind": "primary", "label": null},
+        {"source": "n2", "target": "n3", "kind": "primary", "label": null},
+        {"source": "n2", "target": "n4", "kind": "secondary", "label": "branch"},
+        {"source": "n2", "target": "n5", "kind": "secondary", "label": "branch"},
+        {"source": "n2", "target": "n6", "kind": "secondary", "label": "branch"},
+        {"source": "n3", "target": "n7", "kind": "primary", "label": null},
+        {"source": "n4", "target": "n7", "kind": "secondary", "label": "merge"},
+        {"source": "n5", "target": "n7", "kind": "secondary", "label": "merge"},
+        {"source": "n6", "target": "n7", "kind": "secondary", "label": "merge"},
+        {"source": "n7", "target": "n8", "kind": "primary", "label": null},
+        {"source": "n8", "target": "n9", "kind": "primary", "label": null},
+        {"source": "n9", "target": "n10", "kind": "primary", "label": "pass"},
+        {"source": "n9", "target": "n7", "kind": "feedback", "label": "if failed"}
+      ],
+      "clusters": [
+        {"cluster_id": "cluster_parallel_branches", "label": "Parallel Branches", "role": "group", "members": ["n3", "n4", "n5", "n6"]}
+      ],
+      "lanes": [],
+      "primary_flow": ["n1", "n2", "n3", "n7", "n8", "n9", "n10"],
+      "routing_hints": {
+        "prefer_orthogonal_edges": true,
+        "separate_primary_and_secondary_edges": true
+      },
+      "label_policy": {
+        "max_chars_per_line": 16,
+        "max_lines_per_node": 3
+      }
+    }
+  },
+  "evidence_refs": [
+    {
+      "evidence_id": "ev_structured_capability_showcase",
+      "kind": "text_block",
+      "path": null,
+      "content": "Research question -> FigureAgent controller -> parallel chart, workflow diagram, architecture diagram, caption branches -> SpecGenerator -> Renderer -> Critic -> feedback to SpecGenerator if failed -> Final figure package",
+      "sheet": null,
+      "table_name": null,
+      "row_selector": null,
+      "column_selector": null,
+      "paragraph_ref": "Synthetic FigureAgent controlled capability showcase",
+      "sha256": null
+    }
+  ]
+}

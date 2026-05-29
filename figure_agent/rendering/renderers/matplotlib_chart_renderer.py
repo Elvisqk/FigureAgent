@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import json
 import os
+import textwrap
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
@@ -154,7 +155,9 @@ class MatplotlibChartRenderer:
             "pdf.fonttype": 42,
             "ps.fonttype": 42,
         })
-        fig, ax = plt.subplots(figsize=(6.8, 4.2), dpi=dpi)
+        top_lines, bottom_lines = self._figure_text_line_counts(spec)
+        fig_height = 4.2 + 0.24 * (top_lines + bottom_lines)
+        fig, ax = plt.subplots(figsize=(6.8, fig_height), dpi=dpi)
         if spec.get("title"):
             ax.set_title(spec["title"])
         return fig, ax
@@ -230,7 +233,61 @@ class MatplotlibChartRenderer:
         ax.set_xlabel(labels["x_label"])
         ax.set_ylabel(labels["y_label"])
         ax.grid(axis="y", alpha=0.2)
-        ax.figure.tight_layout()
+        ax.figure.tight_layout(rect=self._plot_rect(spec))
+        self._draw_figure_text(ax.figure, spec)
+
+    def _figure_text(self, spec: dict[str, Any]) -> dict[str, Any]:
+        text = spec.get("figure_text")
+        if not isinstance(text, dict):
+            return {"title": None, "subtitle": None, "notes": [], "footer": None}
+        notes = text.get("notes") or []
+        if isinstance(notes, str):
+            notes = [notes]
+        return {
+            "title": text.get("title"),
+            "subtitle": text.get("subtitle"),
+            "notes": [str(note) for note in notes if str(note).strip()],
+            "footer": text.get("footer"),
+        }
+
+    def _wrapped_text_lines(self, value: str | None, width: int) -> list[str]:
+        if not value:
+            return []
+        return textwrap.wrap(str(value), width=width) or [str(value)]
+
+    def _figure_text_line_counts(self, spec: dict[str, Any]) -> tuple[int, int]:
+        text = self._figure_text(spec)
+        top_lines = len(self._wrapped_text_lines(text["title"], 68)) + len(self._wrapped_text_lines(text["subtitle"], 84))
+        bottom_lines = sum(len(self._wrapped_text_lines(note, 96)) for note in text["notes"])
+        bottom_lines += len(self._wrapped_text_lines(text["footer"], 96))
+        return top_lines, bottom_lines
+
+    def _plot_rect(self, spec: dict[str, Any]) -> tuple[float, float, float, float]:
+        top_lines, bottom_lines = self._figure_text_line_counts(spec)
+        top = 0.98 - min(0.22, top_lines * 0.055)
+        bottom = 0.08 + min(0.24, bottom_lines * 0.045)
+        if bottom >= top - 0.18:
+            bottom = max(0.08, top - 0.18)
+        return (0.0, bottom, 1.0, top)
+
+    def _draw_figure_text(self, fig, spec: dict[str, Any]) -> None:
+        text = self._figure_text(spec)
+        y = 0.975
+        for line in self._wrapped_text_lines(text["title"], 68):
+            fig.text(0.5, y, line, ha="center", va="top", fontsize=12, fontweight="semibold", color="#1F2933")
+            y -= 0.045
+        for line in self._wrapped_text_lines(text["subtitle"], 84):
+            fig.text(0.5, y, line, ha="center", va="top", fontsize=9.5, color="#52606D")
+            y -= 0.036
+
+        bottom_lines: list[str] = []
+        for note in text["notes"]:
+            bottom_lines.extend(f"Note: {line}" if idx == 0 else f"      {line}" for idx, line in enumerate(self._wrapped_text_lines(note, 96)))
+        bottom_lines.extend(self._wrapped_text_lines(text["footer"], 96))
+        y = 0.025 + max(0, len(bottom_lines) - 1) * 0.034
+        for line in bottom_lines:
+            fig.text(0.02, y, line, ha="left", va="bottom", fontsize=7.5, color="#52606D")
+            y -= 0.034
 
     def _save_outputs(self, fig, output: dict[str, Any], attempt: int) -> list[dict[str, str]]:
         FIGURE_DIR.mkdir(parents=True, exist_ok=True)

@@ -1,0 +1,70 @@
+{
+  "request_id": "figreq_flowchart_offline_online_swimlane",
+  "paper_id": "figure_agent_flowchart_demo",
+  "figure_id": "fig_flowchart_offline_online_swimlane",
+  "figure_kind": "diagram",
+  "goal": "Show an offline-to-online agent workflow with separate preparation, serving, and monitoring lanes.",
+  "target_section": "System/Offline Online Workflow",
+  "context": {
+    "result_summary": null,
+    "method_summary": "Offline corpus indexing and prompt calibration feed the online query router. Online serving calls retrieval and generation, then monitoring captures failures and sends them back to offline calibration.",
+    "style_profile": "academic_default",
+    "output_formats": ["svg", "png"],
+    "max_revision_rounds": 2,
+    "diagram_type": "agent_workflow",
+    "diagram_structure": {
+      "layout_mode": "swimlane_tb",
+      "nodes": [
+        {"id": "n1", "label": "Corpus ingest", "role": "input", "group": "offline"},
+        {"id": "n2", "label": "Build index", "role": "store", "group": "offline"},
+        {"id": "n3", "label": "Calibrate prompts", "role": "process", "group": "offline"},
+        {"id": "n4", "label": "Query intake", "role": "input", "group": "online"},
+        {"id": "n5", "label": "Route query", "role": "decision", "group": "online"},
+        {"id": "n6", "label": "Retrieve context", "role": "tool", "group": "online"},
+        {"id": "n7", "label": "Generate answer", "role": "process", "group": "online"},
+        {"id": "n8", "label": "Monitor failures", "role": "decision", "group": "monitoring"},
+        {"id": "n9", "label": "User response", "role": "output", "group": "online"}
+      ],
+      "edges": [
+        {"source": "n1", "target": "n2", "kind": "primary", "label": null},
+        {"source": "n2", "target": "n3", "kind": "primary", "label": null},
+        {"source": "n3", "target": "n5", "kind": "secondary", "label": "policy"},
+        {"source": "n4", "target": "n5", "kind": "primary", "label": null},
+        {"source": "n5", "target": "n6", "kind": "primary", "label": "needs context"},
+        {"source": "n6", "target": "n7", "kind": "primary", "label": null},
+        {"source": "n7", "target": "n9", "kind": "primary", "label": null},
+        {"source": "n7", "target": "n8", "kind": "secondary", "label": "logs"},
+        {"source": "n8", "target": "n3", "kind": "feedback", "label": "recalibrate"}
+      ],
+      "clusters": [],
+      "lanes": [
+        {"lane_id": "lane_offline", "label": "Offline Preparation", "role": "swimlane", "members": ["n1", "n2", "n3"]},
+        {"lane_id": "lane_online", "label": "Online Serving", "role": "swimlane", "members": ["n4", "n5", "n6", "n7", "n9"]},
+        {"lane_id": "lane_monitoring", "label": "Monitoring", "role": "swimlane", "members": ["n8"]}
+      ],
+      "primary_flow": ["n1", "n2", "n3", "n4", "n5", "n6", "n7", "n9"],
+      "routing_hints": {
+        "prefer_orthogonal_edges": true,
+        "separate_primary_and_secondary_edges": true
+      },
+      "label_policy": {
+        "max_chars_per_line": 16,
+        "max_lines_per_node": 3
+      }
+    }
+  },
+  "evidence_refs": [
+    {
+      "evidence_id": "ev_offline_online_swimlane",
+      "kind": "text_block",
+      "path": null,
+      "content": "Offline corpus indexing and prompt calibration feed the online query router. Online serving calls retrieval and generation, then monitoring captures failures and sends them back to offline calibration.",
+      "sheet": null,
+      "table_name": null,
+      "row_selector": null,
+      "column_selector": null,
+      "paragraph_ref": "System/Offline Online Workflow",
+      "sha256": null
+    }
+  ]
+}

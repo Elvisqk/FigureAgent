@@ -1,0 +1,10 @@
+x,score_mean,method,dataset
+18,0.58,Rule Planner,MiniBench
+24,0.64,Rule Planner,DocQA
+32,0.68,Rule Planner,ChartQA
+28,0.70,LLM Planner,MiniBench
+38,0.76,LLM Planner,DocQA
+46,0.81,LLM Planner,ChartQA
+22,0.66,Hybrid Agent,MiniBench
+34,0.79,Hybrid Agent,DocQA
+42,0.85,Hybrid Agent,ChartQA

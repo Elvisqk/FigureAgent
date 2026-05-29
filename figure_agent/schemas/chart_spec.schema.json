@@ -11,6 +11,17 @@
     "figure_kind": {"type": "string", "const": "chart"},
     "chart_type": {"type": "string", "enum": ["line", "bar", "grouped_bar", "scatter", "heatmap"]},
     "title": {"type": ["string", "null"]},
+    "figure_text": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "subtitle", "notes", "footer"],
+      "properties": {
+        "title": {"type": ["string", "null"]},
+        "subtitle": {"type": ["string", "null"]},
+        "notes": {"type": "array", "items": {"type": "string"}},
+        "footer": {"type": ["string", "null"]}
+      }
+    },
     "data_ref": {
       "type": "object",
       "additionalProperties": false,
@@ -83,4 +94,3 @@
     }
   }
 }
-

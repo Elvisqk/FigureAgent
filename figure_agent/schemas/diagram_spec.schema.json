@@ -11,6 +11,17 @@
     "figure_kind": {"type": "string", "const": "diagram"},
     "diagram_type": {"type": "string", "enum": ["pipeline", "module_architecture", "agent_workflow", "decision_flow"]},
     "title": {"type": ["string", "null"]},
+    "figure_text": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "subtitle", "notes", "footer"],
+      "properties": {
+        "title": {"type": ["string", "null"]},
+        "subtitle": {"type": ["string", "null"]},
+        "notes": {"type": "array", "items": {"type": "string"}},
+        "footer": {"type": ["string", "null"]}
+      }
+    },
     "traceability": {
       "type": "object",
       "additionalProperties": false,
@@ -122,7 +133,7 @@
         "cluster_by": {"type": ["string", "null"]},
         "mode": {
           "type": ["string", "null"],
-          "enum": ["layered_lr", "layered_tb", "grid", "hub_spoke", "swimlane_lr", "swimlane_tb", null]
+          "enum": ["layered_lr", "layered_tb", "grid", "hub_spoke", "swimlane_lr", "swimlane_tb", "branch_merge", null]
         }
       }
     },

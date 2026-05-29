@@ -1,0 +1,68 @@
+{
+  "request_id": "figreq_flowchart_release_rollback_pipeline",
+  "paper_id": "figure_agent_flowchart_demo",
+  "figure_id": "fig_flowchart_release_rollback_pipeline",
+  "figure_kind": "diagram",
+  "goal": "Show a release pipeline with validation, canary deployment, production promotion, and rollback feedback.",
+  "target_section": "System/Release Pipeline",
+  "context": {
+    "result_summary": null,
+    "method_summary": "Code change enters unit tests, integration tests, package build, canary deployment, telemetry check, production promotion, and rollback if telemetry fails.",
+    "style_profile": "academic_default",
+    "output_formats": ["svg", "png"],
+    "max_revision_rounds": 2,
+    "diagram_type": "pipeline",
+    "diagram_structure": {
+      "layout_mode": "branch_merge",
+      "nodes": [
+        {"id": "n1", "label": "Code change", "role": "input", "group": null},
+        {"id": "n2", "label": "Unit tests", "role": "process", "group": null},
+        {"id": "n3", "label": "Integration tests", "role": "process", "group": null},
+        {"id": "n4", "label": "Build package", "role": "tool", "group": null},
+        {"id": "n5", "label": "Canary deploy", "role": "process", "group": null},
+        {"id": "n6", "label": "Telemetry check", "role": "decision", "group": null},
+        {"id": "n7", "label": "Promote prod", "role": "output", "group": null},
+        {"id": "n8", "label": "Rollback", "role": "process", "group": "failure_path"},
+        {"id": "n9", "label": "Open incident", "role": "decision", "group": "failure_path"}
+      ],
+      "edges": [
+        {"source": "n1", "target": "n2", "kind": "primary", "label": null},
+        {"source": "n2", "target": "n3", "kind": "primary", "label": null},
+        {"source": "n3", "target": "n4", "kind": "primary", "label": null},
+        {"source": "n4", "target": "n5", "kind": "primary", "label": null},
+        {"source": "n5", "target": "n6", "kind": "primary", "label": null},
+        {"source": "n6", "target": "n7", "kind": "primary", "label": "healthy"},
+        {"source": "n6", "target": "n8", "kind": "secondary", "label": "fail"},
+        {"source": "n8", "target": "n9", "kind": "secondary", "label": null},
+        {"source": "n9", "target": "n1", "kind": "feedback", "label": "fix forward"}
+      ],
+      "clusters": [
+        {"cluster_id": "cluster_failure_path", "label": "Failure Response", "role": "group", "members": ["n8", "n9"]}
+      ],
+      "lanes": [],
+      "primary_flow": ["n1", "n2", "n3", "n4", "n5", "n6", "n7"],
+      "routing_hints": {
+        "prefer_orthogonal_edges": true,
+        "separate_primary_and_secondary_edges": true
+      },
+      "label_policy": {
+        "max_chars_per_line": 16,
+        "max_lines_per_node": 3
+      }
+    }
+  },
+  "evidence_refs": [
+    {
+      "evidence_id": "ev_release_rollback_pipeline",
+      "kind": "text_block",
+      "path": null,
+      "content": "Code change enters unit tests, integration tests, package build, canary deployment, telemetry check, production promotion, and rollback if telemetry fails.",
+      "sheet": null,
+      "table_name": null,
+      "row_selector": null,
+      "column_selector": null,
+      "paragraph_ref": "System/Release Pipeline",
+      "sha256": null
+    }
+  ]
+}

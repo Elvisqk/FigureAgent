@@ -10,7 +10,7 @@
     "diagram_type": {"type": "string", "enum": ["pipeline", "module_architecture", "agent_workflow", "decision_flow"]},
     "layout_mode": {
       "type": "string",
-      "enum": ["layered_lr", "layered_tb", "grid", "hub_spoke", "swimlane_lr", "swimlane_tb"]
+      "enum": ["layered_lr", "layered_tb", "grid", "hub_spoke", "swimlane_lr", "swimlane_tb", "branch_merge"]
     },
     "nodes": {
       "type": "array",

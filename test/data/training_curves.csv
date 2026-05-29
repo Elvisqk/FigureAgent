@@ -1,0 +1,13 @@
+step,method,score_mean,score_std
+1,Baseline,0.42,0.030
+2,Baseline,0.50,0.026
+3,Baseline,0.57,0.024
+4,Baseline,0.61,0.022
+5,Baseline,0.64,0.020
+6,Baseline,0.66,0.019
+1,FigureAgent,0.45,0.028
+2,FigureAgent,0.56,0.023
+3,FigureAgent,0.65,0.020
+4,FigureAgent,0.71,0.018
+5,FigureAgent,0.75,0.016
+6,FigureAgent,0.78,0.015

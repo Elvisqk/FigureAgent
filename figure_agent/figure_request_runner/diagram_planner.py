@@ -58,9 +58,12 @@ class DiagramPlanner:
         self.last_llm_error: str | None = None
 
     def plan(self, request: dict[str, Any], bound_intent: dict[str, Any]) -> dict[str, Any]:
-        plan = self._try_llm_plan(request, bound_intent)
-        source = "llm"
+        plan = self._plan_from_structure(request, bound_intent)
+        source = "structure"
         error = None
+        if plan is None:
+            plan = self._try_llm_plan(request, bound_intent)
+            source = "llm"
         if plan is None:
             plan = self._rule_plan(request, bound_intent)
             source = "fallback"
@@ -74,6 +77,118 @@ class DiagramPlanner:
             "error": error,
         })
         return plan
+
+    def _plan_from_structure(self, request: dict[str, Any], bound_intent: dict[str, Any]) -> dict[str, Any] | None:
+        structure = request.get("context", {}).get("diagram_structure")
+        if not isinstance(structure, dict):
+            return None
+
+        nodes = [
+            {
+                "id": str(node["id"]),
+                "label": str(node["label"]),
+                "role": str(node.get("role") or "process"),
+                "group": node.get("group"),
+            }
+            for node in structure.get("nodes", [])
+            if isinstance(node, dict) and node.get("id") and node.get("label")
+        ]
+        if not nodes:
+            raise ValueError("context.diagram_structure.nodes must include at least one node with id and label")
+
+        node_ids = {node["id"] for node in nodes}
+        edges = [
+            {
+                "source": str(edge["source"]),
+                "target": str(edge["target"]),
+                "kind": str(edge.get("kind") or "primary"),
+                "label": edge.get("label"),
+            }
+            for edge in structure.get("edges", [])
+            if isinstance(edge, dict) and edge.get("source") and edge.get("target")
+        ]
+        if any(edge["kind"] not in {"primary", "secondary", "feedback"} for edge in edges):
+            raise ValueError("context.diagram_structure.edges[].kind must be primary, secondary, or feedback")
+
+        primary_flow = [str(node_id) for node_id in structure.get("primary_flow", []) if str(node_id) in node_ids]
+        if not primary_flow:
+            primary_flow = self._primary_flow_from_edges(nodes, edges)
+
+        layout_mode = str(structure.get("layout_mode") or self._structured_layout_mode(edges, structure))
+        clusters = self._normalized_groups(structure.get("clusters", []), "cluster", node_ids)
+        lanes = self._normalized_groups(structure.get("lanes", []), "lane", node_ids)
+        routing_hints = structure.get("routing_hints") if isinstance(structure.get("routing_hints"), dict) else {}
+        label_policy = structure.get("label_policy") if isinstance(structure.get("label_policy"), dict) else {}
+
+        plan = {
+            "request_id": request["request_id"],
+            "figure_id": request["figure_id"],
+            "diagram_type": bound_intent["recommended_visualization"],
+            "layout_mode": layout_mode,
+            "nodes": nodes,
+            "edges": edges,
+            "clusters": clusters,
+            "lanes": lanes,
+            "primary_flow": primary_flow,
+            "routing_hints": {
+                "prefer_orthogonal_edges": bool(routing_hints.get("prefer_orthogonal_edges", True)),
+                "separate_primary_and_secondary_edges": bool(routing_hints.get("separate_primary_and_secondary_edges", True)),
+            },
+            "label_policy": {
+                "max_chars_per_line": int(label_policy.get("max_chars_per_line", 18)),
+                "max_lines_per_node": int(label_policy.get("max_lines_per_node", 3)),
+            },
+        }
+        validate_payload(plan, "diagram_plan.schema.json")
+        return plan
+
+    def _primary_flow_from_edges(self, nodes: list[dict[str, str | None]], edges: list[dict[str, str | None]]) -> list[str]:
+        node_ids = [str(node["id"]) for node in nodes]
+        primary_edges = [edge for edge in edges if edge.get("kind") == "primary"]
+        incoming = {str(edge["target"]) for edge in primary_edges}
+        start = next((node_id for node_id in node_ids if node_id not in incoming), node_ids[0])
+        flow = [start]
+        seen = {start}
+        current = start
+        while True:
+            next_edge = next((edge for edge in primary_edges if edge["source"] == current and edge["target"] not in seen), None)
+            if not next_edge:
+                break
+            current = str(next_edge["target"])
+            seen.add(current)
+            flow.append(current)
+        if len(flow) < max(2, len(node_ids) // 2):
+            flow.extend(node_id for node_id in node_ids if node_id not in seen)
+        return flow
+
+    def _structured_layout_mode(self, edges: list[dict[str, str | None]], structure: dict[str, Any]) -> str:
+        if structure.get("lanes"):
+            return "swimlane_tb"
+        has_feedback = any(edge.get("kind") == "feedback" for edge in edges)
+        has_branch = any(edge.get("label") in {"branch", "merge"} for edge in edges)
+        if has_branch or has_feedback:
+            return "branch_merge"
+        return "layered_lr"
+
+    def _normalized_groups(self, groups: Any, group_kind: str, node_ids: set[str]) -> list[dict[str, Any]]:
+        if not isinstance(groups, list):
+            return []
+        normalized: list[dict[str, Any]] = []
+        id_key = "cluster_id" if group_kind == "cluster" else "lane_id"
+        for idx, group in enumerate(groups, start=1):
+            if not isinstance(group, dict):
+                continue
+            members = [str(member) for member in group.get("members", []) if str(member) in node_ids]
+            if not members:
+                continue
+            default_id = f"{group_kind}_{idx}"
+            normalized.append({
+                id_key: str(group.get(id_key) or group.get("id") or default_id),
+                "label": str(group.get("label") or default_id.replace("_", " ").title()),
+                "role": str(group.get("role") or group_kind),
+                "members": members,
+            })
+        return normalized
 
     def _try_llm_plan(self, request: dict[str, Any], bound_intent: dict[str, Any]) -> dict[str, Any] | None:
         try:
@@ -365,11 +480,17 @@ class DiagramPlanner:
 
         if "offline" in lower and "online" in lower:
             return "swimlane_tb"
+        if has_parallel and any(keyword in lower for keyword in self.LOOP_KEYWORDS):
+            return "branch_merge"
+        if has_parallel and not framework_like:
+            return "branch_merge"
         if diagram_type == "decision_flow":
             return "layered_tb"
         if framework_like:
             if any(token in lower for token in ["frontend", "backend", "client", "api gateway"]):
                 return "swimlane_tb"
+            if has_parallel:
+                return "branch_merge"
             if has_hub and (node_count >= 4 or has_storage):
                 return "hub_spoke"
             if has_parallel or has_storage or node_count >= 5:
@@ -567,7 +688,7 @@ class DiagramPlanner:
     def _clusters(self, nodes: list[dict[str, str | None]], layout_mode: str, framework_like: bool) -> list[dict[str, Any]]:
         if layout_mode.startswith("swimlane"):
             return []
-        if layout_mode not in {"hub_spoke", "grid"} and not framework_like:
+        if layout_mode not in {"hub_spoke", "grid", "branch_merge"} and not framework_like:
             return []
         groups: dict[str, list[str]] = {}
         for node in nodes:

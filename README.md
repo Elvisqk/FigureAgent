@@ -14,3 +14,11 @@ Quick checks:
 python -m unittest discover figure_agent/tests
 python -m figure_agent --help
 ```
+
+Manual black-box test cases live under `test/`. Inputs are in `test/requests/`, evidence CSVs are in
+`test/data/`, and all generated outputs are written to `test/artifacts/`:
+
+```bash
+bash test/run_all_requests.sh
+bash test/run_request.sh test/requests/chart_line_training_curve.json
+```

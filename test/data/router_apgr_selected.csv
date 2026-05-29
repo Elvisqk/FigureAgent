@@ -1,0 +1,5 @@
+dataset,method,score_mean,cpt50_percent,cpt80_percent
+GSM8K,Router A,0.71,40,70
+GSM8K,Router B,0.69,35,65
+MMLU,Router A,0.64,45,75
+MMLU,Router B,0.61,38,68

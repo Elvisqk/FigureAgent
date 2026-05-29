@@ -1,0 +1,36 @@
+{
+  "request_id": "figreq_chart_bar_component_scaling_7bar_annotated",
+  "paper_id": "figure_agent_outside_text_demo",
+  "figure_id": "fig_chart_bar_component_scaling_7bar_annotated",
+  "figure_kind": "chart",
+  "goal": "Compare seven FigureAgent component scores while rendering an external title and note outside the plotting area.",
+  "target_section": "Experiments/Annotated Component Scaling",
+  "context": {
+    "result_summary": "Scores increase as the system adds stronger planning, rendering, criticism, and integration stages.",
+    "method_summary": null,
+    "style_profile": "academic_default",
+    "output_formats": ["png", "pdf"],
+    "max_revision_rounds": 2,
+    "chart_type": "bar",
+    "figure_title": "Component Contribution Across the FigureAgent Pipeline",
+    "figure_subtitle": "Seven-stage single-series bar chart with external title, subtitle, note, and footer.",
+    "figure_notes": [
+      "Values are synthetic demonstration scores normalized to the [0, 1] interval."
+    ],
+    "figure_footer": "Source: test/data/component_scaling_7bar.csv"
+  },
+  "evidence_refs": [
+    {
+      "evidence_id": "ev_component_scaling_7bar_annotated",
+      "kind": "table_file",
+      "path": "test/data/component_scaling_7bar.csv",
+      "content": null,
+      "sheet": null,
+      "table_name": null,
+      "row_selector": null,
+      "column_selector": ["category", "value"],
+      "paragraph_ref": "Experiments/Annotated Component Scaling",
+      "sha256": null
+    }
+  ]
+}

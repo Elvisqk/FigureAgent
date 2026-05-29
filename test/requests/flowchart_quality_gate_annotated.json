@@ -1,0 +1,71 @@
+{
+  "request_id": "figreq_flowchart_quality_gate_annotated",
+  "paper_id": "figure_agent_outside_text_demo",
+  "figure_id": "fig_flowchart_quality_gate_annotated",
+  "figure_kind": "diagram",
+  "goal": "Show a quality-gated figure generation workflow with external title and notes outside the diagram body.",
+  "target_section": "Method/Annotated Quality Gate",
+  "context": {
+    "result_summary": null,
+    "method_summary": "Draft request -> Bind evidence -> Generate spec -> Render candidate -> Critic gate -> pass to final package; repairable failure loops back to spec repair.",
+    "style_profile": "academic_default",
+    "output_formats": ["svg", "png"],
+    "max_revision_rounds": 2,
+    "diagram_type": "decision_flow",
+    "figure_title": "Quality-Gated Figure Generation",
+    "figure_subtitle": "External text is reserved outside the node-and-edge drawing region.",
+    "figure_notes": [
+      "Dashed feedback denotes automatic repair and rerendering before final integration.",
+      "Manual review is intentionally excluded from this compact example."
+    ],
+    "figure_footer": "Rendered by FigureAgent with context.figure_* metadata.",
+    "diagram_structure": {
+      "layout_mode": "branch_merge",
+      "nodes": [
+        {"id": "n1", "label": "Draft request", "role": "input", "group": null},
+        {"id": "n2", "label": "Bind evidence", "role": "process", "group": null},
+        {"id": "n3", "label": "Generate spec", "role": "process", "group": null},
+        {"id": "n4", "label": "Render candidate", "role": "tool", "group": null},
+        {"id": "n5", "label": "Critic gate", "role": "decision", "group": null},
+        {"id": "n6", "label": "Spec repair", "role": "process", "group": "repair_path"},
+        {"id": "n7", "label": "Final package", "role": "output", "group": null}
+      ],
+      "edges": [
+        {"source": "n1", "target": "n2", "kind": "primary", "label": null},
+        {"source": "n2", "target": "n3", "kind": "primary", "label": null},
+        {"source": "n3", "target": "n4", "kind": "primary", "label": null},
+        {"source": "n4", "target": "n5", "kind": "primary", "label": null},
+        {"source": "n5", "target": "n7", "kind": "primary", "label": "pass"},
+        {"source": "n5", "target": "n6", "kind": "secondary", "label": "repair"},
+        {"source": "n6", "target": "n3", "kind": "feedback", "label": "retry"}
+      ],
+      "clusters": [
+        {"cluster_id": "cluster_repair_path", "label": "Repair Path", "role": "group", "members": ["n6"]}
+      ],
+      "lanes": [],
+      "primary_flow": ["n1", "n2", "n3", "n4", "n5", "n7"],
+      "routing_hints": {
+        "prefer_orthogonal_edges": true,
+        "separate_primary_and_secondary_edges": true
+      },
+      "label_policy": {
+        "max_chars_per_line": 16,
+        "max_lines_per_node": 3
+      }
+    }
+  },
+  "evidence_refs": [
+    {
+      "evidence_id": "ev_quality_gate_annotated",
+      "kind": "text_block",
+      "path": null,
+      "content": "Draft request -> Bind evidence -> Generate spec -> Render candidate -> Critic gate -> pass to final package; repairable failure loops back to spec repair.",
+      "sheet": null,
+      "table_name": null,
+      "row_selector": null,
+      "column_selector": null,
+      "paragraph_ref": "Method/Annotated Quality Gate",
+      "sha256": null
+    }
+  ]
+}

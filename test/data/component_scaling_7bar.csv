@@ -1,0 +1,8 @@
+category,value
+Planner,0.52
+Retriever,0.58
+Binder,0.61
+SpecGen,0.67
+Renderer,0.71
+Critic,0.76
+Integrator,0.82

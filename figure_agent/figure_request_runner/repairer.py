@@ -61,7 +61,7 @@ class FigureRepairer:
         if new_spec.get("figure_kind") == "diagram":
             if new_spec.get("layout", {}).get("direction") not in {"LR", "TB", "GRID"}:
                 raise ValueError("unsupported diagram layout direction")
-            if new_spec.get("layout", {}).get("mode") not in {None, "layered_lr", "layered_tb", "grid", "hub_spoke", "swimlane_lr", "swimlane_tb"}:
+            if new_spec.get("layout", {}).get("mode") not in {None, "layered_lr", "layered_tb", "grid", "hub_spoke", "swimlane_lr", "swimlane_tb", "branch_merge"}:
                 raise ValueError("unsupported diagram layout mode")
         validate_payload(new_spec, schema_for_spec(new_spec))
         return new_spec

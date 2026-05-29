@@ -1,0 +1,30 @@
+{
+  "request_id": "figreq_chart_line_multi_method_4line",
+  "paper_id": "figure_agent_complex_chart_demo",
+  "figure_id": "fig_chart_line_multi_method_4line",
+  "figure_kind": "chart",
+  "goal": "Show four method trajectories over eight optimization steps in a multi-series line chart.",
+  "target_section": "Experiments/Multi-Method Dynamics",
+  "context": {
+    "result_summary": "The full agent improves fastest and reaches the strongest final score, followed by Planner Critic, Retriever Only, and Baseline.",
+    "method_summary": null,
+    "style_profile": "academic_default",
+    "output_formats": ["png", "pdf"],
+    "max_revision_rounds": 2,
+    "chart_type": "line"
+  },
+  "evidence_refs": [
+    {
+      "evidence_id": "ev_multi_method_4line",
+      "kind": "table_file",
+      "path": "test/data/multi_method_4line.csv",
+      "content": null,
+      "sheet": null,
+      "table_name": null,
+      "row_selector": null,
+      "column_selector": ["step", "method", "score_mean"],
+      "paragraph_ref": "Experiments/Multi-Method Dynamics",
+      "sha256": null
+    }
+  ]
+}

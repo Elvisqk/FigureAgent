@@ -53,6 +53,7 @@ class FigureSpecGenerator:
             )
             if spec is None:
                 return None
+            spec = self._apply_request_figure_text(spec, request)
             validate_payload(spec, schema)
             spec = self._normalize_spec(spec)
             self._validate_semantics(spec)
@@ -65,6 +66,14 @@ class FigureSpecGenerator:
         if bound_intent["figure_kind"] == "chart":
             return self._chart_spec(request, bound_intent)
         return self._diagram_spec(request, bound_intent)
+
+    def _apply_request_figure_text(self, spec: dict[str, Any], request: dict[str, Any]) -> dict[str, Any]:
+        figure_text = self._figure_text(request)
+        if any(figure_text.values()):
+            spec["figure_text"] = figure_text
+        else:
+            spec.setdefault("figure_text", figure_text)
+        return spec
 
     def _validate_semantics(self, spec: dict[str, Any]) -> None:
         if spec["figure_kind"] == "chart":
@@ -122,6 +131,7 @@ class FigureSpecGenerator:
             "figure_kind": "chart",
             "chart_type": bound["recommended_visualization"],
             "title": None,
+            "figure_text": self._figure_text(request),
             "data_ref": {"path": evidence["path"], "format": "csv" if evidence["path"].endswith(".csv") else "json"},
             "traceability": {"visual_element_map": trace_map},
             "data_mapping": mapping,
@@ -148,6 +158,8 @@ class FigureSpecGenerator:
 
     def _diagram_spec(self, request: dict[str, Any], bound: dict[str, Any]) -> dict[str, Any]:
         plan = self.diagram_planner.plan(request, bound)
+        has_feedback = any(edge.get("kind") == "feedback" for edge in plan["edges"])
+        has_complex_grouping = bool(plan["clusters"]) or plan["layout_mode"] == "branch_merge"
         nodes = [
             {
                 "id": str(node["id"]),
@@ -176,6 +188,7 @@ class FigureSpecGenerator:
             "figure_kind": "diagram",
             "diagram_type": bound["recommended_visualization"],
             "title": None,
+            "figure_text": self._figure_text(request),
             "traceability": {
                 "node_evidence_map": [{"node_id": node["id"], "evidence_ids": [evidence_id]} for node in nodes],
                 "edge_evidence_map": [{"source": edge["source"], "target": edge["target"], "evidence_ids": [evidence_id]} for edge in edges],
@@ -198,11 +211,11 @@ class FigureSpecGenerator:
                 "dpi": 300,
                 "node_min_width": 170,
                 "node_min_height": 64,
-                "cluster_padding": 24,
-                "lane_spacing": 48,
+                "cluster_padding": 36 if has_complex_grouping else 24,
+                "lane_spacing": 72 if plan["lanes"] else 48,
                 "show_node_roles": False,
-                "feedback_margin": 64,
-                "canvas_margin": 56,
+                "feedback_margin": 80 if has_feedback else 64,
+                "canvas_margin": 64 if (has_feedback or has_complex_grouping) else 56,
             },
             "output": {"basename": request["figure_id"], "formats": [fmt for fmt in request["context"]["output_formats"] if fmt in {"svg", "png"}] or ["svg"]},
         }
@@ -224,6 +237,18 @@ class FigureSpecGenerator:
             role = "input" if idx == 0 else "output" if idx == len(parts) - 1 else "process"
             nodes.append({"id": f"n{idx + 1}", "label": label[:60], "role": role})
         return nodes
+
+    def _figure_text(self, request: dict[str, Any]) -> dict[str, Any]:
+        context = request.get("context", {})
+        notes = context.get("figure_notes") or context.get("notes") or []
+        if isinstance(notes, str):
+            notes = [notes]
+        return {
+            "title": context.get("figure_title") or context.get("display_title"),
+            "subtitle": context.get("figure_subtitle") or context.get("subtitle"),
+            "notes": [str(note) for note in notes if str(note).strip()],
+            "footer": context.get("figure_footer") or context.get("footer"),
+        }
 
     def _direction_for_layout_mode(self, layout_mode: str) -> str:
         if layout_mode in {"layered_tb", "swimlane_tb"}:

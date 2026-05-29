@@ -1,0 +1,70 @@
+{
+  "request_id": "figreq_flowchart_parallel_evidence_fusion",
+  "paper_id": "figure_agent_flowchart_demo",
+  "figure_id": "fig_flowchart_parallel_evidence_fusion",
+  "figure_kind": "diagram",
+  "goal": "Show parallel evidence analysis branches that merge into a ranked figure plan.",
+  "target_section": "Method/Parallel Evidence Fusion",
+  "context": {
+    "result_summary": null,
+    "method_summary": "Research claim intake fans out to table profiling, text mining, citation checks, and visual precedent search. The branches merge into evidence fusion, then produce ranked figure plans and selected render specs.",
+    "style_profile": "academic_default",
+    "output_formats": ["svg", "png"],
+    "max_revision_rounds": 2,
+    "diagram_type": "agent_workflow",
+    "diagram_structure": {
+      "layout_mode": "branch_merge",
+      "nodes": [
+        {"id": "n1", "label": "Claim intake", "role": "input", "group": null},
+        {"id": "n2", "label": "Task planner", "role": "process", "group": null},
+        {"id": "n3", "label": "Table profile", "role": "tool", "group": "analysis_branches"},
+        {"id": "n4", "label": "Text mining", "role": "tool", "group": "analysis_branches"},
+        {"id": "n5", "label": "Citation check", "role": "tool", "group": "analysis_branches"},
+        {"id": "n6", "label": "Visual precedent", "role": "tool", "group": "analysis_branches"},
+        {"id": "n7", "label": "Evidence fusion", "role": "process", "group": null},
+        {"id": "n8", "label": "Rank figure plans", "role": "process", "group": null},
+        {"id": "n9", "label": "Render spec", "role": "output", "group": null}
+      ],
+      "edges": [
+        {"source": "n1", "target": "n2", "kind": "primary", "label": null},
+        {"source": "n2", "target": "n3", "kind": "primary", "label": "branch"},
+        {"source": "n2", "target": "n4", "kind": "secondary", "label": "branch"},
+        {"source": "n2", "target": "n5", "kind": "secondary", "label": "branch"},
+        {"source": "n2", "target": "n6", "kind": "secondary", "label": "branch"},
+        {"source": "n3", "target": "n7", "kind": "primary", "label": "merge"},
+        {"source": "n4", "target": "n7", "kind": "secondary", "label": "merge"},
+        {"source": "n5", "target": "n7", "kind": "secondary", "label": "merge"},
+        {"source": "n6", "target": "n7", "kind": "secondary", "label": "merge"},
+        {"source": "n7", "target": "n8", "kind": "primary", "label": null},
+        {"source": "n8", "target": "n9", "kind": "primary", "label": null}
+      ],
+      "clusters": [
+        {"cluster_id": "cluster_analysis_branches", "label": "Parallel Evidence Analysis", "role": "group", "members": ["n3", "n4", "n5", "n6"]}
+      ],
+      "lanes": [],
+      "primary_flow": ["n1", "n2", "n3", "n7", "n8", "n9"],
+      "routing_hints": {
+        "prefer_orthogonal_edges": true,
+        "separate_primary_and_secondary_edges": true
+      },
+      "label_policy": {
+        "max_chars_per_line": 16,
+        "max_lines_per_node": 3
+      }
+    }
+  },
+  "evidence_refs": [
+    {
+      "evidence_id": "ev_parallel_evidence_fusion",
+      "kind": "text_block",
+      "path": null,
+      "content": "Research claim intake fans out to table profiling, text mining, citation checks, and visual precedent search. The branches merge into evidence fusion, then produce ranked figure plans and selected render specs.",
+      "sheet": null,
+      "table_name": null,
+      "row_selector": null,
+      "column_selector": null,
+      "paragraph_ref": "Method/Parallel Evidence Fusion",
+      "sha256": null
+    }
+  ]
+}
