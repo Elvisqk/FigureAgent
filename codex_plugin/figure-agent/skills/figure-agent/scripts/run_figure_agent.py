@@ -8,6 +8,7 @@ from pathlib import Path
 
 
 ARTIFACT_DIRNAME = "figure_agent_artifacts"
+ENV_FILENAME = ".figure_agent.env"
 
 
 def find_project_root() -> Path | None:
@@ -25,6 +26,7 @@ def find_project_root() -> Path | None:
 
 def main() -> int:
     session_root = Path.cwd().resolve()
+    dotenv_path = session_root / ENV_FILENAME
     project_root = find_project_root()
     if project_root and not (project_root / "figure_agent").exists():
         print(f"FigureAgent project not found: {project_root}", file=sys.stderr)
@@ -33,6 +35,7 @@ def main() -> int:
     python = os.environ.get("FIGURE_AGENT_PYTHON", sys.executable)
     cmd = [python, "-m", "figure_agent", *sys.argv[1:]]
     env = os.environ.copy()
+    load_dotenv(dotenv_path, env)
     if project_root:
         existing = env.get("PYTHONPATH")
         env["PYTHONPATH"] = str(project_root) if not existing else f"{project_root}{os.pathsep}{existing}"
@@ -46,6 +49,34 @@ def main() -> int:
 
     env.setdefault("FIGURE_AGENT_ARTIFACT_ROOT", str(session_root / ARTIFACT_DIRNAME))
     return subprocess.call(cmd, cwd=str(session_root), env=env)
+
+
+def load_dotenv(path: Path, env: dict[str, str]) -> None:
+    if not path.exists():
+        return
+    for line_number, raw_line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        if line.startswith("export "):
+            line = line[len("export "):].strip()
+        if "=" not in line:
+            print(f"Ignoring malformed {path.name} line {line_number}: missing '='", file=sys.stderr)
+            continue
+        key, value = line.split("=", 1)
+        key = key.strip()
+        if not key:
+            print(f"Ignoring malformed {path.name} line {line_number}: empty key", file=sys.stderr)
+            continue
+        if key in os.environ:
+            continue
+        env[key] = strip_quotes(value.strip())
+
+
+def strip_quotes(value: str) -> str:
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
+        return value[1:-1]
+    return value
 
 
 def package_available(python: str, env: dict[str, str]) -> bool:

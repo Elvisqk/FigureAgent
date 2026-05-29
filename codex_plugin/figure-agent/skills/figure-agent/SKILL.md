@@ -75,7 +75,9 @@ FIGURE_AGENT_LLM_MODEL=deepseek-v4-flash
 FIGURE_AGENT_LLM_API_KEY=...
 ```
 
-Do not write API keys into repository files, generated requests, manifests, logs, or shell history. If a network call is needed and sandbox DNS/network fails, request elevated execution rather than silently falling back.
+The helper script also loads a session-local `.figure_agent.env` file before running FigureAgent. Use `.figure_agent.env.example` as the template, then create `.figure_agent.env` in the active session directory for real credentials.
+
+Do not write API keys into repository files, generated requests, manifests, logs, shell history, or `.figure_agent.env.example`. If a network call is needed and sandbox DNS/network fails, request elevated execution rather than silently falling back.
 
 ## Workflow
 

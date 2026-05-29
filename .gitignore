@@ -8,6 +8,7 @@ venv/
 env/
 .env
 .env.*
+.figure_agent.env
 
 .pytest_cache/
 .mypy_cache/
@@ -21,3 +22,6 @@ ccfa_papers/
 reference/
 
 figure_agent/artifacts/
+figure_agent_artifacts/
+plugin_test_session/figure_agent_artifacts/
+plugin_test_session/result.json
