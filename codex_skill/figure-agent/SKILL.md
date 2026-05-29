@@ -18,31 +18,37 @@ Only use `FIGURE_AGENT_LLM_*` if the user explicitly asks to test FigureAgent's 
 
 ## Commands
 
-Use the plugin wrapper from the user's current working directory:
+Use the skill wrapper from the user's current working directory:
 
 ```bash
 FIGURE_AGENT_PYTHON=/opt/miniconda3/envs/codex_env/bin/python \
-python /Users/zyq/plugins/figure-agent/skills/figure-agent/scripts/run_figure_agent.py run CONTEXT.json --output result.json
+python /Users/zyq/.codex/skills/figure-agent/scripts/run_figure_agent.py run CONTEXT.json --output result.json
 ```
 
 For a single request:
 
 ```bash
 FIGURE_AGENT_PYTHON=/opt/miniconda3/envs/codex_env/bin/python \
-python /Users/zyq/plugins/figure-agent/skills/figure-agent/scripts/run_figure_agent.py run-request REQUEST.json
+python /Users/zyq/.codex/skills/figure-agent/scripts/run_figure_agent.py run-request REQUEST.json
 ```
 
 For request generation only:
 
 ```bash
 FIGURE_AGENT_PYTHON=/opt/miniconda3/envs/codex_env/bin/python \
-python /Users/zyq/plugins/figure-agent/skills/figure-agent/scripts/run_figure_agent.py build-requests CONTEXT.json --output request_bundle.json --requests-dir requests
+python /Users/zyq/.codex/skills/figure-agent/scripts/run_figure_agent.py build-requests CONTEXT.json --output request_bundle.json --requests-dir requests
 ```
 
 The wrapper runs in the current directory. If it cannot find the package, set:
 
 ```bash
 FIGURE_AGENT_PROJECT_ROOT=/path/to/FigureAgent
+```
+
+If using the repository copy directly before installing the skill, run:
+
+```bash
+python /path/to/FigureAgent/codex_skill/figure-agent/scripts/run_figure_agent.py ...
 ```
 
 ## Outputs
