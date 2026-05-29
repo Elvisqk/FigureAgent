@@ -1,0 +1,20 @@
+{
+  "name": "figure-agent",
+  "version": "0.1.0",
+  "description": "Use the local FigureAgent Python package from Codex to build paper-ready charts, diagrams, workflows, figure requests, rendered assets, and manifests.",
+  "author": {
+    "name": "Elvisqk"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "FigureAgent",
+    "shortDescription": "Generate paper-ready figures from Codex.",
+    "longDescription": "FigureAgent lets Codex build FigureRequest objects from research context, render chart and diagram assets, and inspect manifests, critic reports, and LLM traces using the local FigureAgent Python package.",
+    "developerName": "Elvisqk",
+    "category": "Productivity",
+    "capabilities": [
+      "skills"
+    ],
+    "defaultPrompt": "Use FigureAgent to generate a paper-ready figure from my research context or FigureRequest."
+  }
+}
