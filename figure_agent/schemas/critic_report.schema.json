@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "critic_report.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["request_id", "figure_id", "attempt", "pass", "severity", "factual_issues", "semantic_issues", "visual_issues", "academic_issues", "integration_issues", "repair_decision", "proposed_patch"],
+  "properties": {
+    "request_id": {"type": "string"},
+    "figure_id": {"type": "string"},
+    "attempt": {"type": "integer", "minimum": 1},
+    "pass": {"type": "boolean"},
+    "severity": {"type": "string", "enum": ["none", "minor", "major", "critical"]},
+    "factual_issues": {"type": "array"},
+    "semantic_issues": {"type": "array"},
+    "visual_issues": {"type": "array"},
+    "academic_issues": {"type": "array"},
+    "integration_issues": {"type": "array"},
+    "repair_decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repairable", "requires_human", "reason"],
+      "properties": {
+        "repairable": {"type": "boolean"},
+        "requires_human": {"type": "boolean"},
+        "reason": {"type": ["string", "null"]}
+      }
+    },
+    "proposed_patch": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["op", "path", "value", "reason"],
+        "properties": {
+          "op": {"type": "string", "enum": ["add", "replace"]},
+          "path": {
+            "type": "string",
+            "enum": [
+              "/style/legend_position",
+              "/data_mapping/error_y",
+              "/labels/y_label",
+              "/output/formats",
+              "/layout/direction",
+              "/layout/mode",
+              "/style/node_min_width",
+              "/style/cluster_padding",
+              "/style/lane_spacing",
+              "/label_policy/max_chars_per_line",
+              "/label_policy/max_lines_per_node"
+            ]
+          },
+          "value": {},
+          "reason": {"type": "string"}
+        }
+      }
+    }
+  }
+}

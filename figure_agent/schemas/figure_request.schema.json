@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "figure_request.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["request_id", "paper_id", "figure_id", "figure_kind", "goal", "target_section", "context", "evidence_refs"],
+  "properties": {
+    "request_id": {"type": "string", "minLength": 1},
+    "paper_id": {"type": "string", "minLength": 1},
+    "figure_id": {"type": "string", "minLength": 1},
+    "figure_kind": {"type": "string", "enum": ["chart", "diagram"]},
+    "goal": {"type": "string", "minLength": 8},
+    "target_section": {"type": "string", "minLength": 1},
+    "context": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["style_profile", "output_formats", "max_revision_rounds"],
+      "properties": {
+        "result_summary": {"type": ["string", "null"]},
+        "method_summary": {"type": ["string", "null"]},
+        "style_profile": {"type": "string"},
+        "output_formats": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "enum": ["png", "pdf", "svg"]},
+          "uniqueItems": true
+        },
+        "max_revision_rounds": {"type": "integer", "minimum": 0, "maximum": 2},
+        "chart_type": {"type": "string"},
+        "diagram_type": {"type": "string"}
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "evidence_ref.schema.json"}
+    }
+  }
+}
+

@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "chart_spec.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["spec_version", "request_id", "figure_id", "figure_kind", "chart_type", "title", "data_ref", "traceability", "data_mapping", "filters", "sort", "aggregation", "labels", "style", "output"],
+  "properties": {
+    "spec_version": {"type": "string", "const": "v1"},
+    "request_id": {"type": "string"},
+    "figure_id": {"type": "string"},
+    "figure_kind": {"type": "string", "const": "chart"},
+    "chart_type": {"type": "string", "enum": ["line", "bar", "grouped_bar", "scatter", "heatmap"]},
+    "title": {"type": ["string", "null"]},
+    "data_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "format"],
+      "properties": {
+        "path": {"type": "string"},
+        "format": {"type": "string", "enum": ["csv", "json"]}
+      }
+    },
+    "traceability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["visual_element_map"],
+      "properties": {
+        "visual_element_map": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["element_id", "evidence_ids", "spec_fields"],
+            "properties": {
+              "element_id": {"type": "string"},
+              "evidence_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+              "spec_fields": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+            }
+          }
+        }
+      }
+    },
+    "data_mapping": {"type": "object", "additionalProperties": {"type": "string"}},
+    "filters": {"type": "array"},
+    "sort": {"type": ["object", "null"], "additionalProperties": true},
+    "aggregation": {"type": ["object", "null"], "additionalProperties": true},
+    "labels": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x_label", "y_label", "legend_title"],
+      "properties": {
+        "x_label": {"type": "string"},
+        "y_label": {"type": "string"},
+        "legend_title": {"type": ["string", "null"]}
+      }
+    },
+    "style": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["palette", "theme", "dpi", "font_scale", "legend_position"],
+      "properties": {
+        "palette": {"type": "string"},
+        "theme": {"type": "string"},
+        "dpi": {"type": "integer", "minimum": 72},
+        "font_scale": {"type": "number", "exclusiveMinimum": 0},
+        "legend_position": {"type": "string"}
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["basename", "formats"],
+      "properties": {
+        "basename": {"type": "string"},
+        "formats": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "enum": ["png", "pdf", "svg"]},
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}
+

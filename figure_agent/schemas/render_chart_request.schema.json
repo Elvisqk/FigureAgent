@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "render_chart_request.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["request_id", "figure_id", "attempt", "chart_spec"],
+  "properties": {
+    "request_id": {"type": "string"},
+    "figure_id": {"type": "string"},
+    "attempt": {"type": "integer", "minimum": 1},
+    "chart_spec": {"$ref": "chart_spec.schema.json"}
+  }
+}
+

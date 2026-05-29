@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "repair_patch.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["request_id", "figure_id", "from_attempt", "to_attempt", "patch_ops", "patch_summary", "safety_checks"],
+  "properties": {
+    "request_id": {"type": "string"},
+    "figure_id": {"type": "string"},
+    "from_attempt": {"type": "integer", "minimum": 1},
+    "to_attempt": {"type": "integer", "minimum": 2},
+    "patch_ops": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["op", "path", "value", "reason"],
+        "properties": {
+          "op": {"type": "string", "enum": ["add", "replace"]},
+          "path": {
+            "type": "string",
+            "enum": [
+              "/style/legend_position",
+              "/data_mapping/error_y",
+              "/labels/y_label",
+              "/output/formats",
+              "/layout/direction",
+              "/layout/mode",
+              "/style/node_min_width",
+              "/style/cluster_padding",
+              "/style/lane_spacing",
+              "/label_policy/max_chars_per_line",
+              "/label_policy/max_lines_per_node"
+            ]
+          },
+          "value": {},
+          "reason": {"type": "string"}
+        }
+      }
+    },
+    "patch_summary": {"type": "string"},
+    "safety_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["introduces_new_evidence", "changes_claim", "changes_figure_kind"],
+      "properties": {
+        "introduces_new_evidence": {"type": "boolean"},
+        "changes_claim": {"type": "boolean"},
+        "changes_figure_kind": {"type": "boolean"}
+      }
+    }
+  }
+}

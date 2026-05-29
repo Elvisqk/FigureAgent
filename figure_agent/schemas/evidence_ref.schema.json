@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "evidence_ref.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["evidence_id", "kind"],
+  "properties": {
+    "evidence_id": {"type": "string", "minLength": 1},
+    "kind": {"type": "string", "enum": ["table_file", "json_file", "text_block", "section_excerpt"]},
+    "path": {"type": ["string", "null"]},
+    "content": {"type": ["string", "null"]},
+    "sheet": {"type": ["string", "null"]},
+    "table_name": {"type": ["string", "null"]},
+    "row_selector": {"type": ["object", "array", "string", "null"]},
+    "column_selector": {"type": ["object", "array", "string", "null"]},
+    "paragraph_ref": {"type": ["string", "null"]},
+    "sha256": {"type": ["string", "null"]}
+  }
+}
+

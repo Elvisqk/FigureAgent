@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "caption_draft.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["request_id", "figure_id", "short_caption", "full_caption", "claim_alignment"],
+  "properties": {
+    "request_id": {"type": "string"},
+    "figure_id": {"type": "string"},
+    "short_caption": {"type": "string"},
+    "full_caption": {"type": "string"},
+    "claim_alignment": {"type": "string"}
+  }
+}
+

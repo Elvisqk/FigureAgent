@@ -1,0 +1,30 @@
+{
+  "request_id": "figreq_complex_branch_loop_workflow",
+  "paper_id": "demo_paper",
+  "figure_id": "fig_complex_branch_loop_workflow",
+  "figure_kind": "diagram",
+  "goal": "Show a complex multi-branch agent workflow with validation gates, parallel analysis branches, and a feedback loop for failed outputs.",
+  "target_section": "Method/Agent Workflow",
+  "context": {
+    "result_summary": null,
+    "method_summary": "User research question -> Context intake -> parallel literature retrieval, data profiling, and hypothesis planning branches -> Evidence fusion -> Draft figure plan -> Quality gate -> if passed generate final figure asset -> if failed revise plan and loop back to parallel analysis branches -> Final manifest integration",
+    "style_profile": "academic_default",
+    "output_formats": ["svg", "png"],
+    "max_revision_rounds": 2,
+    "diagram_type": "agent_workflow"
+  },
+  "evidence_refs": [
+    {
+      "evidence_id": "ev_complex_workflow_text",
+      "kind": "text_block",
+      "path": null,
+      "content": "User research question -> Context intake -> parallel literature retrieval, data profiling, and hypothesis planning branches -> Evidence fusion -> Draft figure plan -> Quality gate -> if passed generate final figure asset -> if failed revise plan and loop back to parallel analysis branches -> Final manifest integration",
+      "sheet": null,
+      "table_name": null,
+      "row_selector": null,
+      "column_selector": null,
+      "paragraph_ref": "Method/Agent Workflow",
+      "sha256": null
+    }
+  ]
+}

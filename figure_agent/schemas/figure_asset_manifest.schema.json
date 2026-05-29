@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "figure_asset_manifest.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["request_id", "figure_id", "status", "final_attempt", "final_spec_path", "render_outputs", "caption", "label", "latex", "critic_report_path", "provenance", "attempt_history"],
+  "properties": {
+    "request_id": {"type": "string"},
+    "figure_id": {"type": "string"},
+    "status": {"type": "string", "enum": ["completed", "failed", "skipped"]},
+    "final_attempt": {"type": "integer", "minimum": 0},
+    "final_spec_path": {"type": ["string", "null"]},
+    "render_outputs": {"type": "array", "items": {"type": "string"}},
+    "caption": {"type": ["string", "null"]},
+    "label": {"type": ["string", "null"]},
+    "latex": {"type": ["string", "null"]},
+    "critic_report_path": {"type": ["string", "null"]},
+    "provenance": {"type": "object", "additionalProperties": true},
+    "attempt_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["attempt", "spec_path", "render_result_path", "caption_path", "critic_report_path", "repair_patch_path"],
+        "properties": {
+          "attempt": {"type": "integer", "minimum": 1},
+          "spec_path": {"type": "string"},
+          "render_result_path": {"type": "string"},
+          "caption_path": {"type": "string"},
+          "critic_report_path": {"type": "string"},
+          "repair_patch_path": {"type": ["string", "null"]}
+        }
+      }
+    }
+  }
+}
+

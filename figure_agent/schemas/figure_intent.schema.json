@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "figure_intent.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["request_id", "figure_id", "claim", "figure_kind", "recommended_visualization", "target_section", "planning_rationale"],
+  "properties": {
+    "request_id": {"type": "string"},
+    "figure_id": {"type": "string"},
+    "claim": {"type": "string"},
+    "figure_kind": {"type": "string", "enum": ["chart", "diagram"]},
+    "recommended_visualization": {"type": "string"},
+    "target_section": {"type": "string"},
+    "planning_rationale": {"type": "string"}
+  }
+}
+

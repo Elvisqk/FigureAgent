@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "render_result.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["request_id", "figure_id", "attempt", "status", "renderer", "output_files", "metadata", "logs", "error"],
+  "properties": {
+    "request_id": {"type": "string"},
+    "figure_id": {"type": "string"},
+    "attempt": {"type": "integer", "minimum": 1},
+    "status": {"type": "string", "enum": ["success", "error"]},
+    "renderer": {"type": "string"},
+    "output_files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "format"],
+        "properties": {
+          "path": {"type": "string"},
+          "format": {"type": "string"}
+        }
+      }
+    },
+    "metadata": {"type": "object", "additionalProperties": true},
+    "logs": {"type": "array", "items": {"type": "string"}},
+    "error": {
+      "type": ["object", "null"],
+      "additionalProperties": true,
+      "required": ["code", "message"],
+      "properties": {
+        "code": {"type": "string"},
+        "message": {"type": "string"},
+        "details": {"type": "object"}
+      }
+    }
+  }
+}
+

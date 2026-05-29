@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "diagram_spec.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["spec_version", "request_id", "figure_id", "figure_kind", "diagram_type", "title", "traceability", "nodes", "edges", "layout", "style", "output"],
+  "properties": {
+    "spec_version": {"type": "string", "const": "v1"},
+    "request_id": {"type": "string"},
+    "figure_id": {"type": "string"},
+    "figure_kind": {"type": "string", "const": "diagram"},
+    "diagram_type": {"type": "string", "enum": ["pipeline", "module_architecture", "agent_workflow", "decision_flow"]},
+    "title": {"type": ["string", "null"]},
+    "traceability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["node_evidence_map", "edge_evidence_map"],
+      "properties": {
+        "node_evidence_map": {"type": "array"},
+        "edge_evidence_map": {"type": "array"}
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "role"],
+        "properties": {
+          "id": {"type": "string"},
+          "label": {"type": "string"},
+          "role": {"type": "string"},
+          "cluster_id": {"type": ["string", "null"]},
+          "lane_id": {"type": ["string", "null"]},
+          "priority": {"type": ["string", "null"], "enum": ["primary", "secondary", null]}
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source", "target", "label"],
+        "properties": {
+          "source": {"type": "string"},
+          "target": {"type": "string"},
+          "label": {"type": ["string", "null"]},
+          "kind": {"type": ["string", "null"], "enum": ["primary", "secondary", "feedback", null]}
+        }
+      }
+    },
+    "clusters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["cluster_id", "label", "role", "members"],
+        "properties": {
+          "cluster_id": {"type": "string"},
+          "label": {"type": "string"},
+          "role": {"type": "string"},
+          "members": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "lanes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["lane_id", "label", "role", "members"],
+        "properties": {
+          "lane_id": {"type": "string"},
+          "label": {"type": "string"},
+          "role": {"type": "string"},
+          "members": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "primary_flow": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "secondary_edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source", "target", "label"],
+        "properties": {
+          "source": {"type": "string"},
+          "target": {"type": "string"},
+          "label": {"type": ["string", "null"]},
+          "kind": {"type": ["string", "null"], "enum": ["primary", "secondary", "feedback", null]}
+        }
+      }
+    },
+    "routing_hints": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "prefer_orthogonal_edges": {"type": "boolean"},
+        "separate_primary_and_secondary_edges": {"type": "boolean"}
+      }
+    },
+    "label_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_chars_per_line": {"type": "integer", "minimum": 8, "maximum": 40},
+        "max_lines_per_node": {"type": "integer", "minimum": 1, "maximum": 5}
+      }
+    },
+    "layout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["direction", "cluster_by"],
+      "properties": {
+        "direction": {"type": "string", "enum": ["LR", "TB", "GRID"]},
+        "cluster_by": {"type": ["string", "null"]},
+        "mode": {
+          "type": ["string", "null"],
+          "enum": ["layered_lr", "layered_tb", "grid", "hub_spoke", "swimlane_lr", "swimlane_tb", null]
+        }
+      }
+    },
+    "style": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["theme", "dpi"],
+      "properties": {
+        "theme": {"type": "string"},
+        "dpi": {"type": "integer", "minimum": 72},
+        "node_min_width": {"type": "integer", "minimum": 80},
+        "node_min_height": {"type": "integer", "minimum": 40},
+        "cluster_padding": {"type": "integer", "minimum": 0},
+        "lane_spacing": {"type": "integer", "minimum": 0}
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["basename", "formats"],
+      "properties": {
+        "basename": {"type": "string"},
+        "formats": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "enum": ["svg", "png"]},
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}

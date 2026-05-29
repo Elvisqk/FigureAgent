@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "bound_figure_intent.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["request_id", "figure_id", "claim", "figure_kind", "recommended_visualization", "target_section", "visual_elements", "must_show", "must_not_do", "evidence_bindings"],
+  "properties": {
+    "request_id": {"type": "string"},
+    "figure_id": {"type": "string"},
+    "claim": {"type": "string"},
+    "figure_kind": {"type": "string", "enum": ["chart", "diagram"]},
+    "recommended_visualization": {"type": "string"},
+    "target_section": {"type": "string"},
+    "visual_elements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["element_id", "element_role", "backing_evidence_ids", "data_slice", "allowed_transformations"],
+        "properties": {
+          "element_id": {"type": "string"},
+          "element_role": {"type": "string"},
+          "backing_evidence_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"type": "string"}
+          },
+          "data_slice": {"type": "object", "additionalProperties": true},
+          "allowed_transformations": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"type": "string"}
+          }
+        }
+      }
+    },
+    "must_show": {"type": "array", "items": {"type": "string"}},
+    "must_not_do": {"type": "array", "items": {"type": "string"}},
+    "evidence_bindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["evidence_id", "source_kind", "source_path", "sha256", "selected_fields", "transformations"],
+        "properties": {
+          "evidence_id": {"type": "string"},
+          "source_kind": {"type": "string"},
+          "source_path": {"type": ["string", "null"]},
+          "sha256": {"type": ["string", "null"]},
+          "selected_fields": {"type": "array", "items": {"type": "string"}},
+          "row_count": {"type": ["integer", "null"], "minimum": 0},
+          "transformations": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    }
+  }
+}
+
