@@ -33,6 +33,20 @@ Artifacts are written under `figure_agent/artifacts` by default. Override this w
 FIGURE_AGENT_ARTIFACT_ROOT=/path/to/artifacts python -m figure_agent run /path/to/research_figure_context.json
 ```
 
+## Codex Adapter
+
+The Codex adapter keeps Codex-specific defaults outside the core pipeline. It runs from the active
+session directory and writes artifacts to `./figure_agent_artifacts/` unless
+`FIGURE_AGENT_ARTIFACT_ROOT` is set:
+
+```bash
+FIGURE_AGENT_PYTHON=/opt/miniconda3/envs/codex_env/bin/python \
+python -m figure_agent.adapters.codex run research_context.json --output result.json
+```
+
+Future agent runtimes, such as OpenClaw, should add their own adapter under
+`figure_agent/adapters/` instead of changing the core `FigureAgent` pipeline.
+
 ## Python API
 
 ```python
