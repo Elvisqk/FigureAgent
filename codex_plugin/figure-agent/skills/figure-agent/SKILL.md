@@ -19,12 +19,6 @@ Use this skill when the user asks to:
 
 ## Local Package
 
-The underlying project is at:
-
-```text
-/Users/zyq/Documents/projects/agent
-```
-
 The Python package is `figure_agent`. Prefer the `codex_env` environment when available.
 
 Main commands:
@@ -35,10 +29,12 @@ conda run -n codex_env python -m figure_agent run-request REQUEST.json
 conda run -n codex_env python -m figure_agent run CONTEXT.json --output RESULT.json
 ```
 
-Outputs are written under:
+When using the plugin helper script, the wrapper locates the package from `FIGURE_AGENT_PROJECT_ROOT`, the current working directory, the script path, or an installed `figure_agent` package.
+
+If the user has not set `FIGURE_AGENT_ARTIFACT_ROOT`, plugin runs write all outputs under the current session directory:
 
 ```text
-/Users/zyq/Documents/projects/agent/figure_agent/artifacts/
+./figure_agent_artifacts/
 ```
 
 Important subdirectories:
@@ -57,6 +53,14 @@ Use `scripts/run_figure_agent.py` from this skill when a stable wrapper is easie
 python /Users/zyq/plugins/figure-agent/skills/figure-agent/scripts/run_figure_agent.py run-request REQUEST.json
 python /Users/zyq/plugins/figure-agent/skills/figure-agent/scripts/run_figure_agent.py run CONTEXT.json --output RESULT.json
 python /Users/zyq/plugins/figure-agent/skills/figure-agent/scripts/run_figure_agent.py build-requests CONTEXT.json --output BUNDLE.json --requests-dir REQUESTS_DIR
+```
+
+The helper runs from the current working directory, so relative context, request, and data paths are resolved relative to the user's active Codex session folder.
+
+If the package is not installed and the current directory is not the FigureAgent repository, set:
+
+```bash
+FIGURE_AGENT_PROJECT_ROOT=/path/to/FigureAgent
 ```
 
 ## Model Configuration
@@ -78,7 +82,7 @@ Do not write API keys into repository files, generated requests, manifests, logs
 1. Determine whether the user has a full research context or an existing FigureRequest.
 2. If they provide context, run `build-requests` or full `run`.
 3. If they provide a FigureRequest, run `run-request`.
-4. Keep generated artifacts in the package artifact layout unless the user explicitly sets `FIGURE_AGENT_ARTIFACT_ROOT`.
+4. Keep generated artifacts in `./figure_agent_artifacts/` unless the user explicitly sets `FIGURE_AGENT_ARTIFACT_ROOT`.
 5. After rendering, report the manifest path, final figure paths, critic result, and relevant trace path.
 6. For visual quality questions, inspect the PNG/SVG and the critic report before answering.
 
@@ -91,4 +95,4 @@ conda run -n codex_env python -m unittest discover figure_agent/tests
 conda run -n codex_env python -m figure_agent --help
 ```
 
-For a generated figure, prefer checking the final manifest plus the newest files in `figure_agent/artifacts/figures`.
+For a generated figure, prefer checking the final manifest plus the newest files in `figure_agent_artifacts/figures`.
