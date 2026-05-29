@@ -70,13 +70,15 @@ class EvidenceBinder:
     def _bind_chart(self, request: dict[str, Any], intent: dict[str, Any]) -> dict[str, Any]:
         evidence = request["evidence_refs"][0]
         fields, row_count, digest = self._inspect_table(evidence)
-        if intent["recommended_visualization"] == "scatter":
-            x = self._first_existing(fields, ["x", "cpt50_percent", "cost", "strong_call_percent"], fields[0])
+        mapping = self._request_data_mapping(request, fields, intent["recommended_visualization"])
+        x = mapping["x"]
+        if intent["recommended_visualization"] == "heatmap":
+            series = mapping.get("y") or mapping.get("series")
+            y = mapping.get("value") or fields[-1]
         else:
-            x = self._first_existing(fields, ["dataset", "x", "step", "condition", "category"], fields[0])
-        series = self._first_existing(fields, ["method", "series", "model", "group"], None)
-        y = self._first_existing(fields, ["score_mean", "mean", "score", "accuracy", "value"], fields[-1])
-        error_y = self._first_existing(fields, ["score_std", "std", "stderr", "error", "ci"], None)
+            series = mapping.get("series")
+            y = mapping.get("y") or mapping.get("value") or fields[-1]
+        error_y = mapping.get("error_y")
 
         visual_elements = [
             {
@@ -211,10 +213,15 @@ class EvidenceBinder:
             return bound
         evidence = request["evidence_refs"][0]
         fields, _, _ = self._inspect_table(evidence)
-        x = self._first_existing(fields, ["dataset", "x", "step", "condition", "category"], fields[0])
-        series = self._first_existing(fields, ["method", "series", "model", "group"], None)
-        y = self._first_existing(fields, ["score_mean", "mean", "score", "accuracy", "value"], fields[-1])
-        error_y = self._first_existing(fields, ["score_std", "std", "stderr", "error", "ci"], None)
+        mapping = self._request_data_mapping(request, fields, intent["recommended_visualization"])
+        x = mapping["x"]
+        if intent["recommended_visualization"] == "heatmap":
+            series = mapping.get("y") or mapping.get("series")
+            y = mapping.get("value") or fields[-1]
+        else:
+            series = mapping.get("series")
+            y = mapping.get("y") or mapping.get("value") or fields[-1]
+        error_y = mapping.get("error_y")
 
         has_primary = False
         has_uncertainty = False
@@ -260,3 +267,23 @@ class EvidenceBinder:
             for key in ["x", "value"]:
                 if not data_slice.get(key):
                     raise ValueError(f"primary_metric requires data_slice.{key}")
+
+    def _request_data_mapping(self, request: dict[str, Any], fields: list[str], visualization: str) -> dict[str, str]:
+        requested = request.get("context", {}).get("data_mapping")
+        if isinstance(requested, dict):
+            mapping = {str(key): str(value) for key, value in requested.items() if isinstance(value, str) and value in fields}
+            if mapping.get("x") and (mapping.get("y") or mapping.get("value")):
+                return mapping
+        if visualization == "scatter":
+            x = self._first_existing(fields, ["x", "cpt50_percent", "cost", "strong_call_percent"], fields[0])
+        else:
+            x = self._first_existing(fields, ["dataset", "x", "step", "condition", "category"], fields[0])
+        series = self._first_existing(fields, ["method", "series", "model", "group"], None)
+        y = self._first_existing(fields, ["score_mean", "mean", "score", "accuracy", "value"], fields[-1])
+        error_y = self._first_existing(fields, ["score_std", "std", "stderr", "error", "ci"], None)
+        mapping = {"x": x, "y": y}
+        if series:
+            mapping["series"] = series
+        if error_y:
+            mapping["error_y"] = error_y
+        return mapping

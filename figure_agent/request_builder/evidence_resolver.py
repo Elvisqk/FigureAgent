@@ -4,6 +4,7 @@ from typing import Any
 
 from figure_agent.common.llm_client import LLMClientError, OpenAICompatibleLLMClient
 from figure_agent.common.validators import validate_payload
+from figure_agent.request_builder.chart_inference import ChartStructureInferer
 from figure_agent.request_builder.models import FigureCandidate, ResolvedCandidate, ResolvedEvidence
 
 
@@ -12,6 +13,7 @@ class EvidenceResolver:
 
     def __init__(self, llm_client: OpenAICompatibleLLMClient | None = None) -> None:
         self.llm_client = llm_client or OpenAICompatibleLLMClient()
+        self.chart_inferer = ChartStructureInferer()
         self.last_llm_error: str | None = None
 
     def resolve(
@@ -143,7 +145,7 @@ class EvidenceResolver:
                 if selected:
                     resolved.column_selector = selected
             elif column_selector is None:
-                resolved.column_selector = evidence.get("column_selector") or self._column_selector(evidence, candidate)
+                resolved.column_selector = resolved.column_selector or evidence.get("column_selector") or self._column_selector(evidence, candidate)
             if item.get("row_selector") is not None:
                 resolved.row_selector = item.get("row_selector")
             if item.get("paragraph_ref"):
@@ -154,6 +156,7 @@ class EvidenceResolver:
         return refs
 
     def _resolve_one(self, evidence: dict[str, Any], candidate: FigureCandidate) -> ResolvedEvidence:
+        inference = self.chart_inferer.infer(evidence, candidate.suggested_chart_type, candidate.goal) if candidate.figure_kind == "chart" else None
         return ResolvedEvidence(
             evidence_id=evidence["evidence_id"],
             kind=evidence["kind"],
@@ -162,7 +165,7 @@ class EvidenceResolver:
             sheet=evidence.get("sheet"),
             table_name=evidence.get("table_name"),
             row_selector=evidence.get("row_selector"),
-            column_selector=evidence.get("column_selector") or self._column_selector(evidence, candidate),
+            column_selector=evidence.get("column_selector") or (inference.column_selector if inference else None) or self._column_selector(evidence, candidate),
             paragraph_ref=evidence.get("paragraph_ref") or candidate.target_section,
             sha256=evidence.get("sha256"),
         )

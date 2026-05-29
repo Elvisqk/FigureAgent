@@ -210,6 +210,8 @@ class FigureOpportunityDetector:
     def _chart_goal(self, claim: dict[str, Any]) -> str:
         text = claim.get("text", "").strip()
         chart_type = claim.get("suggested_chart_type") or self._chart_type(text)
+        if chart_type == "line":
+            return f"Show the trend described by this claim: {text}"
         if chart_type == "scatter":
             return f"Show the trade-off described by this claim: {text}"
         if chart_type == "heatmap":
@@ -222,6 +224,8 @@ class FigureOpportunityDetector:
 
     def _chart_type(self, text: str) -> str:
         lower = text.lower()
+        if any(token in lower for token in ["trend", "trajectory", "curve", "over time", "step", "epoch", "iteration", "时间", "趋势"]):
+            return "line"
         if any(token in lower for token in ["rank", "ranking", "heatmap", "排名"]):
             return "heatmap"
         if any(token in lower for token in ["tradeoff", "trade-off", "cost", "cpt", "scatter", "accuracy", "apgr"]):
